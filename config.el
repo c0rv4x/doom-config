@@ -6,8 +6,8 @@
 
 ;; Some functionality uses this to identify you, e.g. GPG configuration, email
 ;; clients, file templates and snippets.
-(setq user-full-name "John Doe"
-      user-mail-address "john@doe.com")
+(setq user-full-name "c0rv4x"
+      user-mail-address "bmth@me.com")
 
 ;; Doom exposes five (optional) variables for controlling fonts in Doom. Here
 ;; are the three important ones:
@@ -26,6 +26,11 @@
 ;; available. You can either set `doom-theme' or manually load a theme with the
 ;; `load-theme' function. This is the default:
 (setq doom-theme 'doom-one)
+;;
+;; Update font settings
+;; (setq doom-font (font-spec :family "Droid Sans Mono" :size 20))
+(setq doom-font (font-spec :family "Droid Sans Mono" :size 20))
+
 
 ;; If you use `org' and don't want your org files in the default location below,
 ;; change `org-directory'. It must be set before org loads!
@@ -34,71 +39,6 @@
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 (setq display-line-numbers-type t)
-
-
-;; Update font settings
-;; (setq doom-font (font-spec :family "Droid Sans Mono" :size 20))
-(setq doom-font (font-spec :family "Droid Sans Mono" :size 20))
-
-
-;; treemacs hide py cache files
-(with-eval-after-load 'treemacs
-  (defun treemacs-ignore-example (filename absolute-path)
-    (or (string-equal filename ".mypy_cache")
-        (string-equal filename ".pytest_cache")
-        (string-equal filename "__pycache__")))
-
-  (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-example))
-
-
-;; Treemacs switcher
-(defun +private/treemacs-back-and-forth ()
-  (interactive)
-  (if (treemacs-is-treemacs-window-selected?)
-      (aw-flip-window)
-    (treemacs-select-window)))
-
-(map! :after treemacs
-      :leader
-      :n "-" #'+private/treemacs-back-and-forth)
-
-(use-package! lsp
-  :init
-  (setq lsp-pyls-plugins-yapf-enabled t)
-  (setq lsp-pyls-plugins-autopep8-enabled nil)
-)
-
-(after! flycheck
-  :init
-  (add-to-list 'flycheck-disabled-checkers 'python-pylint)
-)
-
-(setq-hook! 'python-mode-hook +format-with :none)
-
-;; (use-package! yapfify
-;;   :hook
-;;   (python-mode . yapf-mode)
-;;   (before-save . (lambda ()
-;;                    (when (eq major-mode 'python-mode)
-;;                      (yapfify-buffer)))))
-
-(defun format-python-buffer ()
-  (message "Format python buffer called")
-  (when (eq major-mode 'python-mode)
-    (message "Formatting...")
-    (lsp-format-buffer)))
-
-(add-hook 'before-save-hook #'format-python-buffer)
-
-
-(setq company-idle-delay 0)
-
-
-;; evil-mc
-(define-key evil-normal-state-map (kbd "M-d") #'evil-mc-make-and-goto-next-match)
-(define-key evil-visual-state-map (kbd "M-d") #'evil-mc-make-and-goto-next-match)
-(define-key evil-normal-state-map (kbd "M-D") #'evil-mc-make-and-goto-prev-match)
-(define-key evil-visual-state-map (kbd "M-D") #'evil-mc-make-and-goto-prev-match)
 
 
 ;; Here are some additional functions/macros that could help you configure Doom:
@@ -117,3 +57,21 @@
 ;;
 ;; You can also try 'gd' (or 'C-c c d') to jump to their definition and see how
 ;; they are implemented.
+
+
+;; treemacs hide py cache files
+(with-eval-after-load 'treemacs
+  (defun treemacs-ignore-example (filename absolute-path)
+    (or (string-equal filename ".mypy_cache")
+        (string-equal filename ".pytest_cache")
+        (string-equal filename "__pycache__")))
+
+  (add-to-list 'treemacs-ignored-file-predicates #'treemacs-ignore-example))
+
+
+;; (use-package! lsp
+;;   :init
+;;   (setq lsp-pyls-plugins-autopep8-enabled nil)
+;; )
+
+(after! treemacs (treemacs-follow-mode))
